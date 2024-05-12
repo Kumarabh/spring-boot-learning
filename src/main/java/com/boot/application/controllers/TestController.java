@@ -2,8 +2,11 @@ package com.boot.application.controllers;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,29 +38,62 @@ public class TestController {
 	}
 
 	@GetMapping("/customer")
-	public List<Customer> getCustomer() {
-		return this.customerService.getAllCustomers();
-	}
-	
-	@GetMapping("/customer/{customerId}")
-	public Customer getCustomer(@PathVariable("customerId") int customerId) {
-		return this.customerService.getCustomerById(customerId);
+	public ResponseEntity<List<Customer>> getCustomer() {
+		List<Customer> customerList = this.customerService.getAllCustomers();
+		
+		if(customerList.size() <= 0) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.of(Optional.of(customerList));
 		
 	}
 	
+	@GetMapping("/customer/{customerId}")
+	public ResponseEntity<Customer> getCustomer(@PathVariable("customerId") int customerId) {
+		Customer customer = this.customerService.getCustomerById(customerId);
+		
+		if(customer == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+		return ResponseEntity.of(Optional.of(customer));
+	}
+	
 	@PostMapping("/customer")
-	public Customer createCustomer(@RequestBody Customer customer) {
-		return this.customerService.createCustomer(customer);
+	public ResponseEntity<Customer> createCustomer(@RequestBody Customer c) {
+		Customer customer = null;
+
+		try {
+			customer = this.customerService.createCustomer(c);
+			return ResponseEntity.of(Optional.of(customer));
+		} catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 		
 	}
 	
 	@DeleteMapping("/customer/{customerId}")
-	public void deleteCustomer(@PathVariable("customerId") int customerId) {
-		this.customerService.deleteCustomer(customerId);
+	public ResponseEntity<?> deleteCustomer(@PathVariable("customerId") int customerId) {
+		try {
+			this.customerService.deleteCustomer(customerId);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+		}
 	}
 	
 	@PutMapping("/customer")
-	public Customer updateCustomer(@RequestBody Customer customer) {
-		return this.customerService.updateCustomer(customer);
+	public ResponseEntity<Customer> updateCustomer(@RequestBody Customer c) {
+		Customer customer = null;
+		
+		try {
+			customer = this.customerService.updateCustomer(c);
+			return ResponseEntity.of(Optional.of(customer));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 }

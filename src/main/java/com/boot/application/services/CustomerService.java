@@ -36,7 +36,14 @@ public class CustomerService {
 	}
 	
 	public Customer getCustomerById(int customerId) {
-		return this.customerList.stream().filter((e) -> e.getCustomerId() == customerId).findFirst().get();
+		Customer customer = null;
+		try {
+			customer = this.customerList.stream().filter((e) -> e.getCustomerId() == customerId).findFirst().get();
+		} 
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		return customer;
 	}
 	
 	public Customer createCustomer(Customer customer) {
