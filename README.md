@@ -44,3 +44,33 @@ public String test() {
 
 }
 ```
+
+#### Rest Controller
+
+```
+package com.boot.application.controllers;
+
+import java.time.LocalDate;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.boot.application.entities.Customer;
+
+@RestController
+public class TestController {
+
+	@GetMapping("/test")
+	public String test() {
+		return "Hello World";
+		
+	}
+	
+	@GetMapping("/customer")
+	public Customer getCustomer() {
+		Customer c1 = new Customer(101, "John Constantino", "Male", LocalDate.parse("1995-01-09"));
+		return c1;
+	}
+	
+}
+```
