@@ -38,4 +38,8 @@ public class CustomerService {
 		return this.customerList.stream().filter((e) -> e.getCustomerId() == customerId).findFirst().get();
 	}
 	
+	public Customer createCustomer(Customer customer) {
+		this.customerList.add(customer);
+		return customer;
+	}
 }
