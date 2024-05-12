@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.application.CustomerService;
 import com.boot.application.entities.Customer;
+import com.boot.application.services.CustomerService;
 
 @RestController
 public class TestController {

@@ -2,7 +2,7 @@
 // First static properties are created
 // Then static blocks are executed
 
-package com.boot.application;
+package com.boot.application.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
