@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -41,5 +42,24 @@ public class CustomerService {
 	public Customer createCustomer(Customer customer) {
 		this.customerList.add(customer);
 		return customer;
+	}
+	
+	public void deleteCustomer(int customerId) {
+		this.customerList = this.customerList.stream().filter(e -> e.getCustomerId() != customerId ).collect(Collectors.toList());
+		
+	}
+	
+	public Customer updateCustomer(Customer customer) {
+		this.customerList = this.customerList.stream().map(e -> {
+			if(e.getCustomerId() == customer.getCustomerId()) {
+				return customer;
+			}
+			return e;
+		}).collect(Collectors.toList());
+		
+		Customer c1 =  this.customerList.stream().filter(e -> e.getCustomerId() == customer.getCustomerId()).findFirst().get();
+		System.out.println(c1.toString());
+		return c1;
+		
 	}
 }
