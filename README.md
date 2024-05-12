@@ -53,6 +53,8 @@ package com.boot.application.controllers;
 import java.time.LocalDate;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.application.entities.Customer;
@@ -60,9 +62,14 @@ import com.boot.application.entities.Customer;
 @RestController
 public class TestController {
 
-	@GetMapping("/test")
+	@RequestMapping(path = "/test1", method = RequestMethod.GET)
+	public String test1() {
+		return "Test-1 works";
+	}
+	
+	@GetMapping("/test2")
 	public String test() {
-		return "Hello World";
+		return "Test-2 works";
 		
 	}
 	
@@ -73,4 +80,5 @@ public class TestController {
 	}
 	
 }
+
 ```
