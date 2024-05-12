@@ -19,27 +19,21 @@ public class Application {
 	   ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
 	   
 	   CustomerRepository customerRepo = applicationContext.getBean(CustomerRepository.class);
-	   
-	   // ---- find all
-	   
+	   	   
 	   List<Customer> dbCustomerList = customerRepo.findAll();
 	   
 	   dbCustomerList.forEach((e) -> { 
 		   System.out.println(e.getCustomerName());
 	   });
 	   
-	   System.out.println("++++");
-	   
-	   // ---- find by gender
-	   
+	   System.out.println("\n" + "++++ Derived Query");
+	   	   
 	   List<Customer> dbCustomerList2 = customerRepo.findByGender("Male");
 	   dbCustomerList2.forEach((e) -> { 
 		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getGender());
 	   });
 	   
-	   System.out.println("++++");
-
-       // ---- find by name and gender
+	   System.out.println("\n" + "++++ Derived Query");
 	   
 	   List<Customer> dbCustomerList3 = customerRepo.findByCustomerNameAndGender("James Smith", "Male");
 	   dbCustomerList3.forEach((e) -> { 
@@ -47,22 +41,40 @@ public class Application {
 	   });
 	   
 	   
-	   System.out.println("++++");
-
-       // ---- find by name starting with
+	   System.out.println("\n" + "++++ Derived Query");
 	   
 	   List<Customer> dbCustomerList4 = customerRepo.findByCustomerNameStartingWith("J");
 	   dbCustomerList4.forEach((e) -> { 
 		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getDateOfBirth());
 	   });
 	   
-	   System.out.println("++++");
+	   System.out.println("\n" + "++++ Derived Query");
 
-       // ---- find by name in
 	   List<String> customerNamesList = new ArrayList<>(Arrays.asList("James Smith", "Elenor Shellstrop"));
 	   List<Customer> dbCustomerList5 = customerRepo.findByCustomerNameIn(customerNamesList);
 	   dbCustomerList5.forEach((e) -> { 
 		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getDateOfBirth());
+	   });
+	   
+	   System.out.println("\n" + "++++ JPQL");
+
+	   List<Customer> dbCustomerList6 = customerRepo.getAllCustomers();
+	   dbCustomerList6.forEach((e) -> { 
+		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getDateOfBirth());
+	   });
+	   
+	   System.out.println("\n" + "++++ JPQL");
+
+	   List<Customer> dbCustomerList7 = customerRepo.getAllCustomersByGender("Male");
+	   dbCustomerList7.forEach((e) -> { 
+		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getGender());
+	   });
+	   
+	   System.out.println("\n" + "++++ Native SQL");
+
+	   List<Customer> dbCustomerList8 = customerRepo.getCustomersList();
+	   dbCustomerList8.forEach((e) -> { 
+		   System.out.println("Name: " + e.getCustomerName() + " Gender: " + e.getGender());
 	   });
 	   
 	}
