@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,30 +25,81 @@ public class CustomerController {
 
 	@Autowired
 	CustomerService customerService;
-	
+
 	@GetMapping("")
-	public List<Customer> getAll() {
-		return this.customerService.getAll();
+	public ResponseEntity<List<Customer>> getAll() {
+
+		List<Customer> customers = null;
+
+		try {
+			customers = this.customerService.getAll();
+			if(customers.size() <= 0) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+			return ResponseEntity.ok().body(customers);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
-	
+
 	@GetMapping("{customerId}")
-	public Customer getById(@PathVariable("customerId") int id) {
-		return this.customerService.getById(id);
+	public ResponseEntity<Customer> getById(@PathVariable("customerId") int id) {
+
+		try {
+			Customer customer = this.customerService.getById(id);
+			if (customer == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(customer);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
-	
+
 	@PostMapping("")
-	public Customer create(@RequestBody Customer c) {
-		return this.customerService.create(c);
+	public ResponseEntity<Customer> create(@RequestBody Customer c) {
+		try {
+			Customer customer = this.customerService.create(c);
+			
+			if(customer == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+			return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+		}
 	}
-	
-	@PutMapping("")
-	public Customer update(@RequestBody Customer c) {
-		return this.customerService.update(c);
+
+	@PutMapping("{customerId}")
+	public ResponseEntity<Customer> update(@RequestBody Customer c, @PathVariable("customerId") int id) {
+		Customer customer = null;
+		try {
+			customer = this.customerService.update(c, id);
+			
+			if(customer == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			}
+			return ResponseEntity.status(HttpStatus.CREATED).body(customer);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+		}
 	}
-	
+
 	@DeleteMapping("{customerId}")
 	public ResponseEntity<String> delete(@PathVariable("customerId") int id) {
-		this.customerService.deleteById(id);
-		return ResponseEntity.of(Optional.of("Deleted Successfully."));
+		
+		try {
+			this.customerService.deleteById(id);
+			return ResponseEntity.status(HttpStatus.OK).build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 }

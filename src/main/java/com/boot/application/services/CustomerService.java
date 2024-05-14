@@ -19,16 +19,37 @@ public class CustomerService {
 	}
 	
 	public Customer getById(int id) {
-		return this.customerRepository.findById(id).get();
+		Customer customer = null;
+		
+		try {
+			customer = this.customerRepository.findById(id).get();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return customer;
 	}
 	
 	public Customer create(Customer c) {
 		return this.customerRepository.save(c);
 	}
 	
-	public Customer update(Customer c) {
-		return this.customerRepository.save(c);
+	public Customer update(Customer c, int id) {
+		
+		try {
+			Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new Exception("Resource not found."));
+			System.out.println(customer);
+			if(customer == null) {
+			  throw new Exception("Customer does not exists.");
+			}
+			return this.customerRepository.save(c);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
+	
 	
 	public void deleteById(int id) {
 		this.customerRepository.deleteById(id);

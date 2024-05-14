@@ -19,8 +19,11 @@ public class Customer {
 	@GeneratedValue
 	private int customerId;
 	
-	@Column
+	@Column(nullable = false, length = 50)
 	private String customerName;
+	
+	@Column(unique = true, nullable = false, length = 50)
+	private String customerEmail;
 	
 	@OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -31,10 +34,11 @@ public class Customer {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(int customerId, String customerName, Cart cart) {
+	public Customer(int customerId, String customerName, String customerEmail, Cart cart) {
 		super();
 		this.customerId = customerId;
 		this.customerName = customerName;
+		this.customerEmail = customerEmail;
 		this.cart = cart;
 	}
 
@@ -52,6 +56,14 @@ public class Customer {
 
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
+	}
+
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
 	}
 
 	public Cart getCart() {
