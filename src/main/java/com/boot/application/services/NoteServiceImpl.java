@@ -27,7 +27,7 @@ public class NoteServiceImpl implements NoteService{
 
 	@Override
 	public Note create(Note n) {
-		n.setCreationDateTime(LocalDateTime.now());
+		n.setCreatedDateTime(LocalDateTime.now());
 		return this.repo.save(n);
 		
 	}
@@ -40,6 +40,7 @@ public class NoteServiceImpl implements NoteService{
 		note.setTitle(n.getTitle());
 		note.setDescription(n.getDescription());
 		note.setUser(n.getUser());
+		note.setUpdatedDateTime(LocalDateTime.now());
 		
 		return this.repo.save(note);
 	}

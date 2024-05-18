@@ -1,5 +1,6 @@
 package com.boot.application.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,8 @@ public class UserController {
 			if(emailExists) {
 				return new ResponseEntity<>("Email id exists.", HttpStatus.BAD_REQUEST);
 			}
+			u.getNotes().get(0).setCreatedDateTime(LocalDateTime.now());
+			
 			user = this.service.create(u);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,6 +86,7 @@ public class UserController {
 			if(!emailExists) {
 				return new ResponseEntity<>("Invalid email id.", HttpStatus.BAD_REQUEST);
 			}
+			u.getNotes().get(0).setUpdatedDateTime(LocalDateTime.now());
 			user = this.service.update(u, id);
 			
 		} catch (Exception e) {

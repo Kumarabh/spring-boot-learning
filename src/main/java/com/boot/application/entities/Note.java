@@ -28,7 +28,10 @@ public class Note {
 	private String description;
 	
 	@Column
-	private LocalDateTime creationDateTime;
+	private LocalDateTime createdDateTime;
+	
+	@Column
+	private LocalDateTime updatedDateTime;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JsonBackReference
@@ -39,12 +42,14 @@ public class Note {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Note(int id, String title, String description, LocalDateTime creationDateTime, User user) {
+	public Note(int id, String title, String description, LocalDateTime createdDateTime, LocalDateTime updatedDateTime,
+			User user) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.creationDateTime = creationDateTime;
+		this.createdDateTime = createdDateTime;
+		this.updatedDateTime = updatedDateTime;
 		this.user = user;
 	}
 
@@ -72,12 +77,20 @@ public class Note {
 		this.description = description;
 	}
 
-	public LocalDateTime getCreationDateTime() {
-		return creationDateTime;
+	public LocalDateTime getCreatedDateTime() {
+		return createdDateTime;
 	}
 
-	public void setCreationDateTime(LocalDateTime creationDateTime) {
-		this.creationDateTime = creationDateTime;
+	public void setCreatedDateTime(LocalDateTime createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
+
+	public LocalDateTime getUpdatedDateTime() {
+		return updatedDateTime;
+	}
+
+	public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
+		this.updatedDateTime = updatedDateTime;
 	}
 
 	public User getUser() {
@@ -87,6 +100,7 @@ public class Note {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
 	
 	
 }

@@ -1,5 +1,6 @@
 package com.boot.application.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class NoteController {
 		
 		try {
 			boolean idExists = this.service.idExists(n.getId());
-			if (idExists) return new ResponseEntity<>("Note exists.", HttpStatus.BAD_REQUEST);
+			if (idExists) return new ResponseEntity<>("Note exists.", HttpStatus.BAD_REQUEST);			
 			note = this.service.create(n);
 			
 		} catch (Exception e) {
