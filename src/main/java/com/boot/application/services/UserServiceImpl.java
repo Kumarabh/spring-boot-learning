@@ -52,5 +52,10 @@ public class UserServiceImpl implements UserService{
 	public boolean idExists(int id) {
 		return this.repo.existsById(id);
 	}
+
+	@Override
+	public List<User> searchByName(String keyword) {
+		return this.repo.searchByName("%"+keyword+"%");
+	}
 	
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boot.application.entities.Note;
 import com.boot.application.entities.User;
 import com.boot.application.services.UserService;
 
@@ -63,8 +64,10 @@ public class UserController {
 			if(emailExists) {
 				return new ResponseEntity<>("Email id exists.", HttpStatus.BAD_REQUEST);
 			}
-			u.getNotes().get(0).setCreatedDateTime(LocalDateTime.now());
-			
+			List<Note> notes = u.getNotes();
+			if(notes != null) {
+				u.getNotes().get(0).setCreatedDateTime(LocalDateTime.now());
+			}
 			user = this.service.create(u);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -111,4 +114,19 @@ public class UserController {
 		return new ResponseEntity<>("Deleted Successfully.", HttpStatus.OK);
 	}
 	
+	@GetMapping("/search/{keyword}")
+	public ResponseEntity<Object> searchByName(@PathVariable("keyword") String keyword) {
+		List<User> users = null;
+		try {
+			users = this.service.searchByName(keyword);
+			if(users == null) {
+				throw new RuntimeException("Request failed.");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
 }

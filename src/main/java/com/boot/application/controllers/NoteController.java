@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.application.entities.Note;
+import com.boot.application.entities.User;
+import com.boot.application.models.NoteResponse;
 import com.boot.application.services.NoteService;
 
 @RestController
@@ -25,11 +28,16 @@ public class NoteController {
 	@Autowired
 	private NoteService service;
 	
-	@GetMapping("/")
-	public ResponseEntity<Object> getAll() {
-		List<Note> notes = null;
+	@GetMapping("")
+	public ResponseEntity<Object> getAll(
+		@RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,
+		@RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize,
+		@RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+		@RequestParam(value = "sortDirection", defaultValue = "asc", required = false) String sortDirection
+		) {
+		NoteResponse notes = null;
 		try {
-			notes = this.service.getAll();
+			notes = this.service.getAll(pageNumber, pageSize, sortBy, sortDirection);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,7 +67,8 @@ public class NoteController {
 		
 		try {
 			boolean idExists = this.service.idExists(n.getId());
-			if (idExists) return new ResponseEntity<>("Note exists.", HttpStatus.BAD_REQUEST);			
+			if (idExists) return new ResponseEntity<>("Note exists.", HttpStatus.BAD_REQUEST);		
+			User user = n.getUser();
 			note = this.service.create(n);
 			
 		} catch (Exception e) {
@@ -99,5 +108,41 @@ public class NoteController {
 			return new ResponseEntity<>("Something went wrong.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>("Deleted Successfully.", HttpStatus.OK);
+	}
+	
+	@GetMapping("/user")
+	public ResponseEntity<Object> getByUser(@RequestBody User u) {
+		List<Note> notes = null;
+		try {
+			notes = this.service.getByUser(u);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(notes, HttpStatus.OK);
+	}
+	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<Object> getByUserId(@PathVariable int id) {
+		List<Note> notes = null;
+		try {
+			notes = this.service.getByUserId(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(notes, HttpStatus.OK);
+	}
+	
+	@GetMapping("/search/{keyword}")
+	public ResponseEntity<Object> searchByNoteTitle(@PathVariable("keyword") String keyword) {
+		List<Note> notes = null;
+		try {
+			notes = this.service.searchNote(keyword);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(notes, HttpStatus.OK);
 	}
 }

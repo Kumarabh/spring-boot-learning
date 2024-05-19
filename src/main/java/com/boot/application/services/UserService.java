@@ -13,4 +13,5 @@ public interface UserService {
 	public void deleteById(int id);
 	public boolean emailExists(String email);
 	public boolean idExists(int id);
+	public List<User> searchByName(String keyword);
 }

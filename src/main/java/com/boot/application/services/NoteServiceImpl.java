@@ -4,9 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.boot.application.entities.Note;
+import com.boot.application.entities.User;
+import com.boot.application.models.NoteResponse;
 import com.boot.application.repositories.NoteRepository;
 
 @Service
@@ -16,8 +23,20 @@ public class NoteServiceImpl implements NoteService{
 	private NoteRepository repo;
 	
 	@Override
-	public List<Note> getAll() {
-		return this.repo.findAll();
+	public NoteResponse getAll(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+		Pageable pageable = null;
+		if(sortDirection.equalsIgnoreCase("asc")) {
+			pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+		} else if(sortDirection.equalsIgnoreCase("desc")){
+			pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+		} else {
+			pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+		}
+			
+		Page<Note> page= this.repo.findAll(pageable);
+		NoteResponse noteResponse = new NoteResponse(page.getContent(), page.getNumber(), page.getSize(), page.getTotalElements(), page.getTotalPages(), page.isLast());
+		
+		return noteResponse;
 	}
 
 	@Override
@@ -54,5 +73,24 @@ public class NoteServiceImpl implements NoteService{
 	public boolean idExists(int id) {
 		return this.repo.existsById(id);
 	}
+
+	@Override
+	public List<Note> getByUser(User u) {
+		return this.repo.findByUser(u);
+	}
+
+	@Override
+	public List<Note> getByTitle(String title) {
+		return this.repo.findByTitleContaining(title);
+	}
+
+	@Override
+	public List<Note> getByUserId(int id) {
+		return this.repo.findByUserId(id);
+	}
 	
+	@Override
+	public List<Note> searchNote(String keyword) {
+		return this.repo.findByTitleContaining(keyword);
+	}
 }
