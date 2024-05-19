@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.boot.application.helper.FileUploadHelper;
 
@@ -32,14 +33,15 @@ public class FileUploadController {
 			
 			// Upload file
 			boolean isUploaded = this.fileUploadHelper.uploadFileNio(file);
-			if(!isUploaded) {
-				throw new RuntimeException("File upload failed. Please try again.");
-			} 
+			if(!isUploaded) throw new RuntimeException("File upload failed. Please try again."); 
 			
+			// Serve same file as response
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>("Successfully uploaded.", HttpStatus.OK);
+		return new ResponseEntity<Object>(ServletUriComponentsBuilder.fromCurrentContextPath().path("/uploads/").path(file.getOriginalFilename()).toUriString(), HttpStatus.OK);
+
 	}
 }

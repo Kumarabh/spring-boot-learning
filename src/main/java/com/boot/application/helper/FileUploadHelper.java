@@ -3,6 +3,7 @@ package com.boot.application.helper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,8 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class FileUploadHelper {
+//	public static final String UPLOAD_DIR = "D:\\WS\\SPRING-BOOT\\7\\application\\src\\main\\resources\\static\\uploads";
+	public final String UPLOAD_DIR = new ClassPathResource("static/uploads").getFile().getAbsolutePath();
 
-	public static final String UPLOAD_DIR = "D:\\WS\\SPRING-BOOT\\7\\application\\src\\main\\resources\\static\\uploads";
+	public FileUploadHelper() throws IOException{}
 
 	public boolean uploadFileNio(MultipartFile file) {
 		boolean isUploaded = false;
