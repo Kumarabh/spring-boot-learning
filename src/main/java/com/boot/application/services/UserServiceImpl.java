@@ -1,9 +1,15 @@
 package com.boot.application.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.boot.application.entities.User;
@@ -16,8 +22,23 @@ public class UserServiceImpl implements UserService{
 	private UserRepository repo;
 	
 	@Override
-	public List<User> getAll() {
-		return this.repo.findAll();
+	public Map<String, Object> getAll(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
+		Pageable pageable = null;
+		if(sortDirection.equalsIgnoreCase("asc")) {
+			pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).ascending());
+		} else {
+			pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
+
+		}
+		Page<User> pageUser = this.repo.findAll(pageable);
+		System.out.println(pageUser.getContent());
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("currentPage", pageUser.getNumber());
+		response.put("totalItems", pageUser.getTotalElements());
+		response.put("totalPages", pageUser.getTotalPages());
+		response.put("data", pageUser.getContent());
+		return response;
 	}
 
 	@Override
@@ -59,5 +80,10 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public boolean emailExists(String emailId) {		
 		return this.repo.existsUserByEmailId(emailId);
+	}
+
+	@Override
+	public List<User> getAll() {
+		return this.repo.findAll();
 	}
 }

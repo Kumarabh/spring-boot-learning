@@ -2,6 +2,7 @@ package com.boot.application.controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.application.entities.User;
@@ -25,16 +27,33 @@ public class UserController {
 	@Autowired
 	private UserService service;
 	
-	@GetMapping("/")
-	public ResponseEntity<List<User>> getAll() {
+	@GetMapping("")
+	public ResponseEntity<Map<String, Object>> getAll(
+		@RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber,
+		@RequestParam(name = "pageSize", defaultValue = "5") int pageSize,
+		@RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
+		@RequestParam(name = "sortDirection", defaultValue = "asc") String sortDirection
+		) {
+		Map<String, Object> userResponse = null;
+		try {
+			userResponse = this.service.getAll(pageNumber, pageSize, sortBy, sortDirection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+		}
+		return new ResponseEntity<>(userResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<Object> getAll() {
 		List<User> users = null;
 		try {
 			users = this.service.getAll();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-
-		}
+			}
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 	
